@@ -67,6 +67,19 @@ describe('FileProcessor', function () {
       assert.equal(result, '  <link rel="stylesheet" href="foo.css">');
     });
 
+    it('should replace css blocks with a link to a stylesheet (in XHTML mode)', function () {
+      var fp = new FileProcessor('xhtml', [], {});
+      var block = {
+        dest: 'foo.css',
+        type: 'css',
+        src: ['bar.css'],
+        indent: '  '
+      };
+
+      var result = fp.replaceWith(block);
+      assert.equal(result, '  <link rel="stylesheet" href="foo.css"/>');
+    });
+
     it('should remove css blocks which have no stylesheets linked in them', function () {
       var fp = new FileProcessor('html', [], {});
       var block = {
@@ -166,6 +179,20 @@ describe('FileProcessor', function () {
       assert.equal(result, '  <link rel="stylesheet" href="foo.css" media="(min-width:980px)">');
     });
 
+    it('should preserve media attribute (in XHTML mode)', function () {
+      var fp = new FileProcessor('xhtml', [], {});
+      var block = {
+        dest: 'foo.css',
+        type: 'css',
+        src: ['bar.css'],
+        media: '(min-width:980px)',
+        indent: '  '
+      };
+
+      var result = fp.replaceWith(block);
+      assert.equal(result, '  <link rel="stylesheet" href="foo.css" media="(min-width:980px)"/>');
+    });
+
     it('should preserve IE conditionals for js blocks', function () {
       var fp = new FileProcessor('html', [], {});
       var block = {
@@ -194,6 +221,21 @@ describe('FileProcessor', function () {
 
       var result = fp.replaceWith(block);
       assert.equal(result, '  <!--[if (lt IE 9) & (!IEmobile)]>\n  <link rel="stylesheet" href="foo.css">\n  <![endif]-->');
+    });
+
+    it('should preserve IE conditionals for css blocks (in XHTML mode)', function () {
+      var fp = new FileProcessor('xhtml', [], {});
+      var block = {
+        dest: 'foo.css',
+        type: 'css',
+        src: ['bar.css'],
+        conditionalStart: '<!--[if (lt IE 9) & (!IEmobile)]>',
+        conditionalEnd: '<![endif]-->',
+        indent: '  '
+      };
+
+      var result = fp.replaceWith(block);
+      assert.equal(result, '  <!--[if (lt IE 9) & (!IEmobile)]>\n  <link rel="stylesheet" href="foo.css"/>\n  <![endif]-->');
     });
   });
 

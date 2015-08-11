@@ -193,6 +193,23 @@ Default: `nil`
 
 The root directory from which your files will be resolved.
 
+### htmlOutputMode
+
+Type: 'string'  
+Default: `undefined`
+
+This can be set to 'xhtml' or 'html' to modify the style of the generated elements in either HTML or XHTML documents.  
+Setting this does not affect non-HTML file types.
+
+For example in the case of <link> element when in 'xhtml' mode you get the additional '/' character.
+
+```html
+<!-- options: { htmlOutputMode: 'html' } -->
+<link src="css/output.css">
+<!-- options: { htmlOutputMode: 'xhtml' } -->
+<link src="css/output.css"/>
+```
+
 ### flow
 
 Type: 'object'  

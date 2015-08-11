@@ -133,6 +133,64 @@ describe('usemin', function () {
 
     });
 
+    it('should replace with revved files when found (in HTML mode)', function () {
+      grunt.file.mkdir('build');
+      grunt.file.mkdir('build/images');
+      grunt.file.mkdir('build/foo');
+      grunt.file.mkdir('build/images/misc');
+      grunt.file.write('build/images/test.23012.png', 'foo');
+      grunt.file.write('build/images/bar.23012.png', 'foo');
+      grunt.file.write('build/images/misc/test.2a436.png', 'foo');
+      grunt.file.copy(path.join(__dirname, 'fixtures/htmlprocessor_relative.html'), 'build/foo/index.html');
+
+      grunt.log.muted = true;
+      grunt.config.init();
+      grunt.config('usemin', {
+        html: 'build/foo/index.html',
+        options: {
+          htmlOutputMode: 'html'
+        }
+      });
+      grunt.task.run('usemin');
+      grunt.task.start();
+
+      var changed = grunt.file.read('build/foo/index.html');
+
+      assert.ok(changed.match(/<img src="\.\.\/images\/test\.23012\.png"\>/));
+      assert.ok(changed.match(/<link rel=\"stylesheet\" href=\"styles\/main\.min\.css\">/));
+      assert.ok(changed.match(/<img src=\"\.\.\/images\/misc\/test\.2a436\.png\">/));
+
+    });
+
+    it('should replace with revved files when found (in XHTML mode)', function () {
+      grunt.file.mkdir('build');
+      grunt.file.mkdir('build/images');
+      grunt.file.mkdir('build/foo');
+      grunt.file.mkdir('build/images/misc');
+      grunt.file.write('build/images/test.23012.png', 'foo');
+      grunt.file.write('build/images/bar.23012.png', 'foo');
+      grunt.file.write('build/images/misc/test.2a436.png', 'foo');
+      grunt.file.copy(path.join(__dirname, 'fixtures/htmlprocessor_relative.html'), 'build/foo/index.html');
+
+      grunt.log.muted = true;
+      grunt.config.init();
+      grunt.config('usemin', {
+        html: 'build/foo/index.html',
+        options: {
+          htmlOutputMode: 'xhtml'
+        }
+      });
+      grunt.task.run('usemin');
+      grunt.task.start();
+
+      var changed = grunt.file.read('build/foo/index.html');
+
+      assert.ok(changed.match(/<img src="\.\.\/images\/test\.23012\.png"\>/));
+      assert.ok(changed.match(/<link rel=\"stylesheet\" href=\"styles\/main\.min\.css\"\/>/));
+      assert.ok(changed.match(/<img src=\"\.\.\/images\/misc\/test\.2a436\.png\">/));
+
+    });
+
     it('should take into account alternate path for assets', function () {
       grunt.file.mkdir('build');
       grunt.file.mkdir('foo');
